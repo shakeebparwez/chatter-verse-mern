@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { LoginUser } from "../../apicalls/users.js";
+import toast from "react-hot-toast";
 
 export const Login = () => {
   const [user, setUser] = useState({
@@ -8,7 +10,19 @@ export const Login = () => {
   });
 
   const login = async () => {
-    console.log(user);
+    // console.log(user);
+    try {
+      const response = await LoginUser(user);
+      if(response.success) {
+        toast.success(response.message);
+        localStorage.setItem("token", response.data);
+        window.location.href = "/";
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   }
 
   return (

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { RegisterUser } from "../../apicalls/users.js";
+import toast from "react-hot-toast";
 
 export const Register = () => {
   const [user, setUser] = useState({
@@ -9,7 +11,17 @@ export const Register = () => {
   });
 
   const register = async () => {
-    console.log(user);
+    // console.log(user);
+    try {
+      const response = await RegisterUser(user);
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   }
 
   return (
