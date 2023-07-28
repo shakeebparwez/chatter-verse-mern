@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "../../apicalls/users.js";
 import toast from "react-hot-toast";
 
 export const Login = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -16,7 +17,7 @@ export const Login = () => {
       if(response.success) {
         toast.success(response.message);
         localStorage.setItem("token", response.data);
-        window.location.href = "/";
+        navigate("/");
       } else {
         toast.error(response.message);
       }
@@ -24,6 +25,12 @@ export const Login = () => {
       toast.error(error.message);
     }
   }
+
+  useEffect(() => {
+    if(localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="h-screen bg-primary flex items-center justify-center">

@@ -2,13 +2,13 @@ const User = require("../models/userModel");
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 // user registration
 
 router.post("/register", async (req, res) => {
     try {
         // check if user already exists
-        console.log("Inside Register");
         const user = await User.findOne({
             email: req.body.email
         });
@@ -84,6 +84,25 @@ router.post("/login", async (req, res) => {
             data: token
         });
 
+    } catch (error) {
+        res.send({
+            message: error.message,
+            success: false,
+        })
+    }
+})
+
+// get current user
+
+router.get("/get-current-user", authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findOne({_id: req.body.userId});
+        // console.log(user);
+        res.send({
+            success: true,
+            message: "User fetched successfully",
+            data: user,
+        });
     } catch (error) {
         res.send({
             message: error.message,
