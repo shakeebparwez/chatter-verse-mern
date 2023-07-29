@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginUser } from "../../apicalls/users.js";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { HideLoader, ShowLoader } from "../../redux/loaderSlice";
 
 export const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
@@ -13,21 +16,24 @@ export const Login = () => {
   const login = async () => {
     // console.log(user);
     try {
+      dispatch(ShowLoader());
       const response = await LoginUser(user);
-      if(response.success) {
+      dispatch(HideLoader());
+      if (response.success) {
         toast.success(response.message);
         localStorage.setItem("token", response.data);
-        navigate("/");
+        window.location.href = "/";
       } else {
         toast.error(response.message);
       }
     } catch (error) {
+      dispatch(HideLoader());
       toast.error(error.message);
     }
   }
 
   useEffect(() => {
-    if(localStorage.getItem("token")) {
+    if (localStorage.getItem("token")) {
       navigate("/");
     }
   }, []);
