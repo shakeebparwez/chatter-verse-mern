@@ -5,7 +5,8 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { HideLoader, ShowLoader } from "../redux/loaderSlice";
 import { useSelector } from "react-redux";
-import { SetUser, SetAllUsers } from "../redux/userSlice";
+import { SetUser, SetAllUsers, SetAllChats } from "../redux/userSlice";
+import { GetAllChats } from "../apicalls/chats";
 
 export const ProtectedRoute = ({ children }) => {
   // const [user, setUser] = useState(null);
@@ -19,12 +20,15 @@ export const ProtectedRoute = ({ children }) => {
       dispatch(ShowLoader());
       const response = await GetCurrentUser();
       const allUsersResponse = await GetAllUsers();
+      const allChatsResponse = await GetAllChats();
+
       dispatch(HideLoader());
 
       if (response.success) {
         // setUser(response.data);
         dispatch(SetUser(response.data));
         dispatch(SetAllUsers(allUsersResponse.data));
+        dispatch(SetAllChats(allChatsResponse.data));
       }
       else {
         toast.error(response.message);
