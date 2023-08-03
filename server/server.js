@@ -28,16 +28,22 @@ io.on("connection", (socket) => {
     socket.on("join-room", (userId) => {
         // console.log("user joined", userId);
         socket.join(userId);
-    })
-
-    // send message to receipent
-    socket.on("send-message", ({text, sender, receipent}) => {
-        // send message to receipent (Diana)
-        io.to(receipent).emit("receive-message", {
-            text,
-            sender,
-        });
     });
+
+    // send message to clients (who are in the same room)
+
+    socket.on("send-message", (message) => {
+        io.to(message.members[0]).to(message.members[1]).emit("receive-message", message);
+    });
+
+    // // send message to receipent
+    // socket.on("send-message", ({text, sender, receipent}) => {
+    //     // send message to receipent (Diana)
+    //     io.to(receipent).emit("receive-message", {
+    //         text,
+    //         sender,
+    //     });
+    // });
 
     // console.log("connected with socketid", socket.id);
 

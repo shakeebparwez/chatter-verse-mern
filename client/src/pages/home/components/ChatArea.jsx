@@ -6,8 +6,9 @@ import { GetMessages, SendMessage } from "../../../apicalls/messages";
 import moment from "moment";
 import { ClearChatMessages } from './../../../apicalls/chats';
 import { SetAllChats } from "../../../redux/userSlice";
+import store from "../../../redux/store";
 
-const ChatArea = ({socket}) => {
+const ChatArea = ({ socket }) => {
   const dispatch = useDispatch();
   const [newMessage, setNewMessage] = useState("");
   const { selectedChat, user, allChats } = useSelector(state => state.userReducer);
@@ -19,20 +20,29 @@ const ChatArea = ({socket}) => {
 
   const sendNewMessage = async () => {
     try {
-      dispatch(ShowLoader());
+      // dispatch(ShowLoader());
       const message = {
         chat: selectedChat._id,
         sender: user._id,
         text: newMessage,
       };
 
+      // send message to server using socket
+      socket.emit("send-message", {
+        ...message,
+        members: selectedChat.members.map((mem) => mem._id),
+        createdAt: moment().format("DD-MM-YYYY hh:mm:ss"),
+        read: false,
+      });
+
+      // send message to server to save in db
       const response = await SendMessage(message);
-      dispatch(HideLoader());
+      // dispatch(HideLoader());
       if (response.success) {
         setNewMessage("");
       }
     } catch (error) {
-      dispatch(HideLoader());
+      // dispatch(HideLoader());
       toast.error(error.message);
     }
   }
@@ -77,7 +87,23 @@ const ChatArea = ({socket}) => {
     if (selectedChat?.lastMessage?.sender !== user._id) {
       clearUnreadMessages();
     }
+
+    // receive message from server using socket
+
+    socket.off("receive-message").on("receive-message", (message) => {
+      const tempSelectedChat = store.getState().userReducer.selectedChat; // To access redux variables from socket
+
+      if (tempSelectedChat._id === message.chat) {
+        setMessages((messages) => [...messages, message]);
+      }
+    });
   }, [selectedChat]);
+
+  useEffect(() => {
+    // always scroll to bottom for messages id
+    const messagesContainer = document.getElementById("messages");
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }, [messages])
 
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
@@ -102,7 +128,7 @@ const ChatArea = ({socket}) => {
         <hr />
       </div>
 
-      <div className="h-[55vh] overflow-y-scroll p-5">
+      <div className="h-[55vh] overflow-y-scroll p-5" id="messages">
         <div className="flex flex-col gap-2">
           {messages.map((message) => {
             const isCurrentUserIsSender = message.sender === user._id;
