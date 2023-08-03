@@ -54,14 +54,14 @@ export const ProtectedRoute = ({ children }) => {
 
     <div className="h-screen w-screen bg-gray-100 p-2">
       {/* header */}
-      <div className="flex justify-between p-5">
+      <div className="flex justify-between p-5 bg-primary rounded">
         <div className="flex items-center gap-1">
-          <i className="ri-message-3-line text-2xl"></i>
-          <h1 className="text-primary text-2xl uppercase font-bold">CHATTERVERSE</h1>
+          <i className="ri-message-3-line text-2xl text-white"></i>
+          <h1 className="text-white text-2xl uppercase font-bold">CHATTERVERSE</h1>
         </div>
-        <div className="flex gap-1 text-md">
-          <i className="ri-shield-user-line"></i>
-          <h1 className="underline">{user?.name}</h1>
+        <div className="flex gap-1 text-md items-center text-white">
+          <i className="ri-shield-user-line text-white"></i>
+          <h1 className="underline text-white">{user?.name}</h1>
           <i
             className="ri-logout-circle-r-line ml-5 text-xl cursor-pointer text-primary"
             onClick={() => {
@@ -73,7 +73,7 @@ export const ProtectedRoute = ({ children }) => {
       </div>
 
       {/* content (pages) */}
-      <div className="p-5">{children}</div>
+      <div className="py-5">{children}</div>
     </div>
   )
 }
