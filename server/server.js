@@ -23,6 +23,8 @@ const io = require("socket.io")(server, {
 });
 
 // check the connection of socket from client
+let onlineUsers = [];
+
 io.on("connection", (socket) => {
     // socket events will be here
     socket.on("join-room", (userId) => {
@@ -39,7 +41,20 @@ io.on("connection", (socket) => {
     // clear unread messages
     socket.on("clear-unread-messages", (data) => {
         io.to(data.members[0]).to(data.members[1]).emit("unread-messages-cleared", data);
-    })
+    });
+
+    // typing event
+    socket.on("typing", (data) => {
+        io.to(data.members[0]).to(data.members[1]).emit("started-typing", data);
+    });
+
+    // online users
+    socket.on("came-online", (userId)=>{
+        if(!onlineUsers.includes(userId)) {
+            onlineUsers.push(userId);
+        }
+        io.emit("online-users", onlineUsers);
+    });
 
     // // send message to receipent
     // socket.on("send-message", ({text, sender, receipent}) => {

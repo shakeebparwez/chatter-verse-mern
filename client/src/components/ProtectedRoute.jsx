@@ -63,7 +63,7 @@ export const ProtectedRoute = ({ children }) => {
           <i className="ri-shield-user-line text-white"></i>
           <h1 className="underline text-white">{user?.name}</h1>
           <i
-            className="ri-logout-circle-r-line ml-5 text-xl cursor-pointer text-primary"
+            className="ri-logout-circle-r-line ml-5 text-xl cursor-pointer text-white"
             onClick={() => {
               localStorage.removeItem("token");
               navigate("/login");

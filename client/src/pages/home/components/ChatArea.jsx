@@ -9,6 +9,8 @@ import { SetAllChats } from "../../../redux/userSlice";
 import store from "../../../redux/store";
 
 const ChatArea = ({ socket }) => {
+  const [isReceipentTyping, setIsReceipentTyping] = useState(false);
+
   const dispatch = useDispatch();
   const [newMessage, setNewMessage] = useState("");
   const { selectedChat, user, allChats } = useSelector(state => state.userReducer);
@@ -68,9 +70,9 @@ const ChatArea = ({ socket }) => {
         chat: selectedChat._id,
         members: selectedChat.members.map((mem) => mem._id),
       });
-      dispatch(ShowLoader());
+      // dispatch(ShowLoader());
       const response = await ClearChatMessages(selectedChat._id);
-      dispatch(HideLoader());
+      // dispatch(HideLoader());
 
       if (response.success) {
         const updatedChats = allChats.map((chat) => {
@@ -82,10 +84,30 @@ const ChatArea = ({ socket }) => {
         dispatch(SetAllChats(updatedChats));
       }
     } catch (error) {
-      dispatch(HideLoader());
+      // dispatch(HideLoader());
       toast.error(error.message);
     }
   };
+
+  const getDateInRegularFormat = (date) => {
+    let result = "";
+
+    // if date is today then return time in hh:mm format
+    // if date is today then return time in hh:mm format
+    if (moment(date).isSame(moment(), "day")) {
+      result = moment(date).format("hh:mm");
+    }
+    // if date is yesterdat return yesterday and time in hh:mm format
+    else if (moment(date).isSame(moment().subtract(1, "day"), "day")) {
+      result = `Yesterday ${moment(date).format("hh:mm")}`;
+    }
+    // if date is this year return date and time in MMM DD hh:mm format
+    else if (moment(date).isSame(moment(), "year")) {
+      result = moment(date).format("MMM DD hh:mm");
+    }
+
+    return result;
+  }
 
   useEffect(() => {
     getMessages();
@@ -101,7 +123,7 @@ const ChatArea = ({ socket }) => {
         setMessages((messages) => [...messages, message]);
       }
 
-      if(tempSelectedChat._id === message.chat && message.sender !== user._id) {
+      if (tempSelectedChat._id === message.chat && message.sender !== user._id) {
         clearUnreadMessages();
       }
     });
@@ -111,10 +133,10 @@ const ChatArea = ({ socket }) => {
       const tempAllChats = store.getState().userReducer.allChats;
       const tempSelectedChat = store.getState().userReducer.selectedChat;
 
-      if(data.chat === tempSelectedChat._id) {
+      if (data.chat === tempSelectedChat._id) {
         // update unreadmessages count in selected chat
         const updatedChats = tempAllChats.map((chat) => {
-          if(chat._id === data.chat) {
+          if (chat._id === data.chat) {
             return {
               ...chat, unreadMessages: 0,
             };
@@ -125,7 +147,7 @@ const ChatArea = ({ socket }) => {
 
         // set all messages as read
         setMessages(prevMessages => {
-          return prevMessages?.map(message=>{
+          return prevMessages?.map(message => {
             return {
               ...message,
               read: true
@@ -134,13 +156,25 @@ const ChatArea = ({ socket }) => {
         })
       }
     })
+
+    // receipent typing
+    socket.on("started-typing", (data) => {
+      const selectedChat = store.getState().userReducer.selectedChat;
+
+      if (data.chat === selectedChat._id && data.sender !== user._id) {
+        setIsReceipentTyping(true);
+      }
+      setTimeout(() => {
+        setIsReceipentTyping(false);
+      }, 1500)
+    });
   }, [selectedChat]);
 
   useEffect(() => {
     // always scroll to bottom for messages id
     const messagesContainer = document.getElementById("messages");
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-  }, [messages])
+  }, [messages, isReceipentTyping])
 
   return (
     <div className="bg-white h-[82vh] border rounded-2xl w-full flex flex-col justify-between p-5">
@@ -167,28 +201,44 @@ const ChatArea = ({ socket }) => {
 
       <div className="h-[55vh] overflow-y-scroll p-5" id="messages">
         <div className="flex flex-col gap-2">
-          {messages.map((message) => {
+          {messages.map((message, index) => {
             const isCurrentUserIsSender = message.sender === user._id;
 
-            return <div className={`flex ${isCurrentUserIsSender && "justify-end"}`}>
-              <div className="flex flex-col gap-1">
-                <h1 className={`${isCurrentUserIsSender ? "bg-primary text-white rounded-bl-none" : "bg-gray-300 text-primary rounded-tr-none"} p-2 rounded-xl`}>
-                  {message.text}
-                </h1>
-                <h1 className="text-gray-500 text-sm">
-                  {moment(message.createdAt).format("hh:mm A")}
-                </h1>
-              </div>
-              {isCurrentUserIsSender && <i className={`ri-check-double-line text-lg p-1
+            return (
+              <div className={`flex ${isCurrentUserIsSender && "justify-end"}`}>
+                <div className="flex flex-col gap-1">
+                  <h1 className={`${isCurrentUserIsSender ? "bg-primary text-white rounded-bl-none" : "bg-gray-300 text-primary rounded-tr-none"} p-2 rounded-xl`}>
+                    {message.text}
+                  </h1>
+                  <h1 className="text-gray-500 text-sm">
+                    {getDateInRegularFormat(message.createdAt)}
+                  </h1>
+                </div>
+                {isCurrentUserIsSender && <i className={`ri-check-double-line text-lg p-1
               ${message.read ? "text-green-700" : "text-gray-400"}`}></i>}
-            </div>
+              </div>
+            );
           })}
+          {isReceipentTyping && (
+            <div className="pb-1">
+              <h1 className="bg-blue-100 text-primary p-2 rounded-xl w-max">
+                typing...
+              </h1>
+            </div>
+          )}
         </div>
       </div>
 
       <div>
         <div className="h-18 rounded-xl border-gray-300 shadow border flex justify-between p-2 items-center">
-          <input type="text" placeholder="Type a message" className="w-[90%] border-0 h-full rounder-xl focus:border-none" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
+          <input type="text" placeholder="Type a message" className="w-[90%] border-0 h-full rounder-xl focus:border-none" value={newMessage} onChange={(e) => {
+            setNewMessage(e.target.value);
+            socket.emit("typing", {
+              chat: selectedChat._id,
+              members: selectedChat.members.map((mem) => mem._id),
+              sender: user._id
+            })
+          }} />
           <button className="bg-primary text-white p-2 rounded h-max" onClick={sendNewMessage}>
             <i className="ri-send-plane-2-line text-white py-1 px-5 rounded h-max"></i>
           </button>

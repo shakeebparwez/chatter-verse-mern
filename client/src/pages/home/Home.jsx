@@ -11,11 +11,17 @@ export const Home = () => {
 
   const [searchKey, setSearchKey] = useState("");
   const { selectedChat, user } = useSelector(state => state.userReducer);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
     // join the room
     if (user) {
       socket.emit("join-room", user._id);
+      socket.emit("came-online", user._id);
+
+      socket.on("online-users", (users) => {
+        setOnlineUsers(users);
+      })
 
     //   // send new message to receipent (Diana)
     //   socket.emit("send-message", {text: "Hi Diana, This is from Shakeeb",
@@ -51,6 +57,7 @@ export const Home = () => {
         <UsersList
           searchKey={searchKey}
           socket={socket}
+          onlineUsers={onlineUsers}
         />
       </div>
 
