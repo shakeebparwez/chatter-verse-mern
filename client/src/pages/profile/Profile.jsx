@@ -45,7 +45,9 @@ function Profile() {
   }
 
   return (
-    user && <div className="text-xl font-semibold uppercase text-gray-500 flex gap-2 flex-col p-2 shadow-md border w-max border-gray-500">
+    user && (
+      <div className="flex items-center justify-center h-[80vh]">
+        <div className="text-xl font-semibold uppercase text-gray-500 flex gap-2 flex-col p-2 shadow-md border w-max border-gray-300 rounded">
       <h1>{user.name}</h1>
       <h1>{user.email}</h1>
       <h1>Created At: {moment(user.createdAt).format("MMMM Do YYYY, hh:mm:ss a")}</h1>
@@ -58,6 +60,8 @@ function Profile() {
           onClick={updateProfilePic}>Update</button>
       </div>
     </div>
+      </div>
+    )
   )
 }
 

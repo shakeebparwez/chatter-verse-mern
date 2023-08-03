@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:5000");
+localStorage.setItem("socket", socket);
 
 export const Home = () => {
 
@@ -21,18 +22,22 @@ export const Home = () => {
 
       socket.on("online-users", (users) => {
         setOnlineUsers(users);
+      });
+
+      socket.on("online-users-updated", (users) => {
+        setOnlineUsers(users);
       })
 
-    //   // send new message to receipent (Diana)
-    //   socket.emit("send-message", {text: "Hi Diana, This is from Shakeeb",
-    //   sender: user._id,
-    //   receipent: "64c53c5f4e87fb255ab78a54",
-    // });
+      //   // send new message to receipent (Diana)
+      //   socket.emit("send-message", {text: "Hi Diana, This is from Shakeeb",
+      //   sender: user._id,
+      //   receipent: "64c53c5f4e87fb255ab78a54",
+      // });
 
-    //   // receive message from receipent (Shakeeb)
-    //   socket.on("receive-message", (data) => {
-    //     console.log(data);
-    //   })
+      //   // receive message from receipent (Shakeeb)
+      //   socket.on("receive-message", (data) => {
+      //     console.log(data);
+      //   })
     }
   }, [user])
 
@@ -58,12 +63,25 @@ export const Home = () => {
           searchKey={searchKey}
           socket={socket}
           onlineUsers={onlineUsers}
+          setSearchKey={setSearchKey}
         />
       </div>
 
       {/* 2nd Part ChatBox */}
       {selectedChat && (
         <div className="w-full"><ChatArea socket={socket} /></div>
+      )}
+      {!selectedChat && (
+        <div className="w-full h-[80vh]  items-center justify-center flex bg-white flex-col">
+          <img
+            src="https://www.pngmart.com/files/16/Speech-Chat-Icon-Transparent-PNG.png"
+            alt=""
+            className="w-96 h-96"
+          />
+          <h1 className="text-2xl font-semibold text-gray-500">
+            Select a user to chat
+          </h1>
+        </div>
       )}
     </div>
   )

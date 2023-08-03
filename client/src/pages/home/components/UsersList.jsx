@@ -8,7 +8,7 @@ import store from "../../../redux/store";
 import { useEffect } from "react";
 
 
-const UsersList = ({ searchKey, socket, onlineUsers }) => {
+const UsersList = ({ searchKey, socket, onlineUsers, setSearchKey }) => {
     const { allUsers, allChats, user, selectedChat } = useSelector(state => state.userReducer);
 
     const dispatch = useDispatch();
@@ -25,6 +25,7 @@ const UsersList = ({ searchKey, socket, onlineUsers }) => {
                 const updatedChats = [...allChats, newChat];
                 dispatch(SetAllChats(updatedChats));
                 dispatch(SetSelectedChat(newChat));
+                setSearchKey("");
             } else {
 
             }
@@ -149,15 +150,18 @@ const UsersList = ({ searchKey, socket, onlineUsers }) => {
                         userObj = chatObjOrUserObj.members.find((mem) => mem._id !== user._id);
                     }
                     return (
-                        <div className={`shadow-sm border p-3 rounded-xl bg-white flex justify-between items-center cursor-pointer w-full ${getIsSelectedChatOrNot(userObj) && "border-primary border-2"}`} key={userObj._id} onClick={() => openChat(userObj._id)}>
+                        <div className={`shadow-sm border p-2 rounded-xl bg-white flex justify-between items-center cursor-pointer w-full ${getIsSelectedChatOrNot(userObj) && "border-primary border-2"}`} key={userObj._id} onClick={() => openChat(userObj._id)}>
                             <div
                                 className="flex gap-5 items-center">
                                 {userObj.profilePic && (
+                                    <div className= "h-12 w-12 flex items-center justify-center relative">
                                     <img
                                         src={userObj.profilePic}
                                         alt="profile pic"
-                                        className="w-10 h-10 rounded-full"
+                                        className="w-12 h-12 rounded-full"
                                     />
+                                    {onlineUsers.includes(userObj._id) && <div className="bg-green-700 h-3 w-3 rounded-full absolute bottom-[2px] right-1"></div>}
+                                    </div>
                                 )}
                                 {!userObj.profilePic && (
                                     <div className="bg-gray-400 rounded-full h-12 w-12 flex items-center justify-center relative">

@@ -7,6 +7,8 @@ import { HideLoader, ShowLoader } from "../redux/loaderSlice";
 import { useSelector } from "react-redux";
 import { SetUser, SetAllUsers, SetAllChats } from "../redux/userSlice";
 import { GetAllChats } from "../apicalls/chats";
+import {io} from "socket.io-client";
+const socket = io("http://localhost:5000");
 
 export const ProtectedRoute = ({ children }) => {
   // const [user, setUser] = useState(null);
@@ -61,19 +63,20 @@ export const ProtectedRoute = ({ children }) => {
             navigate("/")
           }}>CHATTERVERSE</h1>
         </div>
-        <div className="flex gap-1 text-md items-center text-white">
+        <div className="flex gap-2 text-md items-center bg-white p-2 rounded">
           {
             user?.profilePic && <img src={user?.profilePic} alt="profile" className="h-8 w-8 rounded-full object-cover" />
           }
           {
-            !user?.profilePic && <i className="ri-shield-user-line text-white"></i>
+            !user?.profilePic && <i className="ri-shield-user-line text-primary"></i>
           }
-          <h1 className="underline text-white cursor-pointer" onClick={() => {
+          <h1 className="underline text-primary cursor-pointer" onClick={() => {
             navigate("/profile");
           }}>{user?.name}</h1>
           <i
-            className="ri-logout-circle-r-line ml-5 text-xl cursor-pointer text-white"
+            className="ri-logout-circle-r-line ml-5 text-xl cursor-pointer text-primary"
             onClick={() => {
+              socket.emit("went-offline", user._id);
               localStorage.removeItem("token");
               navigate("/login");
             }}
