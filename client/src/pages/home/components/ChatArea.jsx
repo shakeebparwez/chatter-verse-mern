@@ -63,6 +63,11 @@ const ChatArea = ({ socket }) => {
 
   const clearUnreadMessages = async () => {
     try {
+
+      socket.emit("clear-unread-messages", {
+        chat: selectedChat._id,
+        members: selectedChat.members.map((mem) => mem._id),
+      });
       dispatch(ShowLoader());
       const response = await ClearChatMessages(selectedChat._id);
       dispatch(HideLoader());
@@ -89,14 +94,46 @@ const ChatArea = ({ socket }) => {
     }
 
     // receive message from server using socket
-
-    socket.off("receive-message").on("receive-message", (message) => {
+    socket.on("receive-message", (message) => {
       const tempSelectedChat = store.getState().userReducer.selectedChat; // To access redux variables from socket
 
       if (tempSelectedChat._id === message.chat) {
         setMessages((messages) => [...messages, message]);
       }
+
+      if(tempSelectedChat._id === message.chat && message.sender !== user._id) {
+        clearUnreadMessages();
+      }
     });
+
+    // clear unread messages from server using socket
+    socket.on("unread-messages-cleared", (data) => {
+      const tempAllChats = store.getState().userReducer.allChats;
+      const tempSelectedChat = store.getState().userReducer.selectedChat;
+
+      if(data.chat === tempSelectedChat._id) {
+        // update unreadmessages count in selected chat
+        const updatedChats = tempAllChats.map((chat) => {
+          if(chat._id === data.chat) {
+            return {
+              ...chat, unreadMessages: 0,
+            };
+          }
+          return chat;
+        })
+        dispatch(SetAllChats(updatedChats));
+
+        // set all messages as read
+        setMessages(prevMessages => {
+          return prevMessages?.map(message=>{
+            return {
+              ...message,
+              read: true
+            }
+          })
+        })
+      }
+    })
   }, [selectedChat]);
 
   useEffect(() => {

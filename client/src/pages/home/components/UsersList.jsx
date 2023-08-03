@@ -4,8 +4,11 @@ import { HideLoader, ShowLoader } from "../../../redux/loaderSlice";
 import { CreateNewChat } from "../../../apicalls/chats";
 import toast from "react-hot-toast";
 import moment from "moment";
+import store from "../../../redux/store";
+import { useEffect } from "react";
 
-const UsersList = ({ searchKey }) => {
+
+const UsersList = ({ searchKey, socket }) => {
     const { allUsers, allChats, user, selectedChat } = useSelector(state => state.userReducer);
 
     const dispatch = useDispatch();
@@ -83,6 +86,32 @@ const UsersList = ({ searchKey }) => {
             );
         }
     }
+
+    useEffect(() => {
+        socket.on("receive-message", (message) => {
+            // if the chat area opened is not equal to chat in message, then increase unread messages by 1 and update last message
+
+            const tempSelectedChat = store.getState().userReducer.selectedChat;
+            
+            const tempAllChats = store.getState().userReducer.allChats;
+
+            if(tempSelectedChat?._id !== message.chat) {
+                const updatedAllChats = tempAllChats.map((chat) => {
+                    if(chat._id === message.chat) {
+                        return {
+                            ...chat,
+                            unreadMessages: (chat?.unreadMessages || 0) + 1,
+                            lastMessage: message,
+                        };
+                    }
+
+                    return chat;
+                });
+                dispatch(SetAllChats(updatedAllChats));
+            }
+
+        });
+    },[]);
 
     return (
         <div className="flex flex-col gap-3 mt-5 w-96">

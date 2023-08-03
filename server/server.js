@@ -36,6 +36,11 @@ io.on("connection", (socket) => {
         io.to(message.members[0]).to(message.members[1]).emit("receive-message", message);
     });
 
+    // clear unread messages
+    socket.on("clear-unread-messages", (data) => {
+        io.to(data.members[0]).to(data.members[1]).emit("unread-messages-cleared", data);
+    })
+
     // // send message to receipent
     // socket.on("send-message", ({text, sender, receipent}) => {
     //     // send message to receipent (Diana)

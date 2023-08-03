@@ -50,6 +50,7 @@ export const Home = () => {
         />
         <UsersList
           searchKey={searchKey}
+          socket={socket}
         />
       </div>
 
