@@ -35,3 +35,7 @@ input:focus {
     height: 40px;
     text-transform: uppercase;
 }
+
+.file-input {
+    border: none !important;
+}

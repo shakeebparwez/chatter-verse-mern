@@ -57,11 +57,20 @@ export const ProtectedRoute = ({ children }) => {
       <div className="flex justify-between p-5 bg-primary rounded">
         <div className="flex items-center gap-1">
           <i className="ri-message-3-line text-2xl text-white"></i>
-          <h1 className="text-white text-2xl uppercase font-bold">CHATTERVERSE</h1>
+          <h1 className="text-white text-2xl uppercase font-bold cursor-pointer" onClick={() => {
+            navigate("/")
+          }}>CHATTERVERSE</h1>
         </div>
         <div className="flex gap-1 text-md items-center text-white">
-          <i className="ri-shield-user-line text-white"></i>
-          <h1 className="underline text-white">{user?.name}</h1>
+          {
+            user?.profilePic && <img src={user?.profilePic} alt="profile" className="h-8 w-8 rounded-full object-cover" />
+          }
+          {
+            !user?.profilePic && <i className="ri-shield-user-line text-white"></i>
+          }
+          <h1 className="underline text-white cursor-pointer" onClick={() => {
+            navigate("/profile");
+          }}>{user?.name}</h1>
           <i
             className="ri-logout-circle-r-line ml-5 text-xl cursor-pointer text-white"
             onClick={() => {

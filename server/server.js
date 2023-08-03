@@ -10,7 +10,9 @@ const usersRoute = require("./routes/usersRoute")
 const chatsRoute = require("./routes/chatsRoute");
 const messagesRoute = require("./routes/messagesRoute")
 
-app.use(express.json());
+app.use(express.json({
+    limit: "50mb",
+}));
 
 
 const server = require("http").createServer(app);

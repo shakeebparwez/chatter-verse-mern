@@ -3,6 +3,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middlewares/authMiddleware");
+const cloudinary = require("../cloudinary");
 
 // user registration
 
@@ -96,7 +97,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/get-current-user", authMiddleware, async (req, res) => {
     try {
-        const user = await User.findOne({_id: req.body.userId});
+        const user = await User.findOne({ _id: req.body.userId });
         // console.log(user);
         res.send({
             success: true,
@@ -116,7 +117,7 @@ router.get("/get-current-user", authMiddleware, async (req, res) => {
 router.get("/get-all-users", authMiddleware, async (req, res) => {
     try {
         const allUsers = await User.find({
-            _id: { $ne: req.body.userId}
+            _id: { $ne: req.body.userId }
         });
         res.send({
             success: true,
@@ -128,6 +129,37 @@ router.get("/get-all-users", authMiddleware, async (req, res) => {
             message: error.message,
             success: false,
         });
+    }
+});
+
+// update user profile picture
+
+router.post("/update-profile-picture", authMiddleware, async (req, res) => {
+    try {
+        const image = req.body.image;
+
+        // upload image to cloudinary and get url
+
+        const uploadedImage = await cloudinary.uploader.upload(image, {
+            folder: "chatterverse",
+            
+        });
+
+        // update user profile picture
+
+        const user = await User.findOneAndUpdate({ _id: req.body.userId },
+            { profilePic: uploadedImage.secure_url }, { new: true });
+
+        res.send({
+            success: true,
+            message: "Profile picture updated successfully",
+            data: user,
+        })
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message,
+        })
     }
 });
 
