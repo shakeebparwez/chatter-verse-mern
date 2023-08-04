@@ -75,19 +75,19 @@ To run ChatterVerse locally, follow these steps:
    npm run dev
    ```
 
-5. **Visit `http://localhost:3000`** in your web browser to access Chatterverse.
+5. **Visit `http://localhost:3000`** in your web browser to access ChatterVerse.
 
 ## Contributing
 
-We welcome contributions from the open-source community to enhance ChatterVerse further. If you find any bugs, have suggestions, or want to add new features, please submit a pull request.
+I welcome contributions from the open-source community to enhance ChatterVerse further. If you find any bugs, have suggestions, or want to add new features, please submit a pull request.
 
 
 ## Acknowledgements
 
-We extend our gratitude to the developers of the technologies used in this project, as well as the open-source community for their valuable contributions.
+I extend my gratitude to the developers of the technologies used in this project, as well as the open-source community for their valuable contributions.
 
 ---
 
-Thank you for choosing ChatterVerse! We hope you enjoy using it as much as we enjoyed building it. If you have any questions or need assistance, feel free to contact me at **shakeebparwez@gmail.com**.
+Thank you for choosing ChatterVerse! I hope you enjoy using it as much as I enjoyed building it. If you have any questions or need assistance, feel free to contact me at **shakeebparwez@gmail.com**.
 
 Happy chatting! 😃🎉
