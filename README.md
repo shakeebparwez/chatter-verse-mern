@@ -1,4 +1,4 @@
-# Chatterverse MERN Stack Project
+# ChatterVerse MERN Stack Project
 
 ![screenshot](preveiw.png)
 
@@ -6,7 +6,7 @@
   <em>Where Conversations Come Alive</em>
 </p>
 
-Welcome to **Chatterverse**, an interactive and real-time messaging platform built with the **MERN (MongoDB, Express, React, Node.js)** stack. 🚀💬 Chatterverse provides users with a seamless and engaging chatting experience, offering features like real-time communication, image sharing, online status, read receipts, and more! 
+Welcome to **ChatterVerse**, an interactive and real-time messaging platform built with the **MERN (MongoDB, Express, React, Node.js)** stack. 🚀💬 ChatterVerse provides users with a seamless and engaging chatting experience, offering features like real-time communication, image sharing, online status, read receipts, and more! 
 
 ## Key Features
 
@@ -40,7 +40,7 @@ Welcome to **Chatterverse**, an interactive and real-time messaging platform bui
 
 ## [🌐 Live Demo](https://chatterverse-shark.onrender.com)
 
-Experience Chatterverse in action by visiting our live demo hosted on **Render**. Join the conversation and see for yourself the magic of real-time messaging!
+Experience ChatterVerse in action by visiting our live demo hosted on **Render**. Join the conversation and see for yourself the magic of real-time messaging!
 
 ## Deployment
 
@@ -79,11 +79,8 @@ To run Chatterverse locally, follow these steps:
 
 ## Contributing
 
-We welcome contributions from the open-source community to enhance Chatterverse further. If you find any bugs, have suggestions, or want to add new features, please submit a pull request.
+We welcome contributions from the open-source community to enhance ChatterVerse further. If you find any bugs, have suggestions, or want to add new features, please submit a pull request.
 
-## License
-
-Chatterverse is licensed under the **MIT License**. View the [LICENSE](/path/to/LICENSE) file for details.
 
 ## Acknowledgements
 
@@ -91,6 +88,6 @@ We extend our gratitude to the developers of the technologies used in this proje
 
 ---
 
-Thank you for choosing Chatterverse! We hope you enjoy using it as much as we enjoyed building it. If you have any questions or need assistance, feel free to contact us at **support@chatterverse.com**.
+Thank you for choosing ChatterVerse! We hope you enjoy using it as much as we enjoyed building it. If you have any questions or need assistance, feel free to contact me at **shakeebparwez@gmail.com**.
 
 Happy chatting! 😃🎉
