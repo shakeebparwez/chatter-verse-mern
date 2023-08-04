@@ -44,7 +44,7 @@ Experience ChatterVerse in action by visiting our live demo hosted on **Render**
 
 ## Deployment
 
-To run Chatterverse locally, follow these steps:
+To run ChatterVerse locally, follow these steps:
 
 1. **Clone the repository**:
    ```
