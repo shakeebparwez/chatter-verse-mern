@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
 const socket = io("https://chatterverse-shark.onrender.com");
-localStorage.setItem("socket", socket);
 
 export const Home = () => {
 
